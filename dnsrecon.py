@@ -415,7 +415,7 @@ def brute_reverse(res, ip_list, verbose = False):
 
     return returned_records
 
-def brute_domain(res, dict, dom, filter = None, verbose = False):
+def brute_domain(res, dict, dom, filter = None, verbose = False,skip=False):
     """
     Main Function for domain brute forcing
     """
@@ -425,16 +425,21 @@ def brute_domain(res, dict, dom, filter = None, verbose = False):
     found_hosts = []
     continue_brt = 'y'
 
+
     # Check if wildcard resolution is enabled
     wildcard_ip = check_wildcard(res, dom)
-    if wildcard_ip:
-        print_status('Do you wish to continue? y/n ')
-        continue_brt = str(sys.stdin.readline()[:-1])
-    if re.search(r'y',continue_brt, re.I):
+    if wildcard_ip :
+        if not skip:
+          print_status('Do you wish to continue? y/n ')
+          continue_brt = str(sys.stdin.readline()[:-1])
+        else:
+          continue_brt = "n"
+          print_status("skipping Dictionary Attack")
+    if re.search(r'y',continue_brt, re.I) :
         # Check if Dictionary file exists
 
         if os.path.isfile(dict):
-            f = open(dict, 'r+')
+            f = open(dict, 'r')
 
             # Thread brute-force.
             try:
@@ -1141,6 +1146,7 @@ def usage():
     print("   --threads          <number> Number of threads to use in Range Reverse Look-up, Forward")
     print("                               Look-up Brute force and SRV Record Enumeration")
     print("   --lifetime         <number> Time to wait for a server to response to a query.")
+    print("   --skip                      Automatically skips Brute Force if domain wildcard-resolves")
     print("   --db               <file>   SQLite 3 file to save found records.")
     print("   --xml              <file>   XML File to save found records.")
     print("   --csv              <file>   Comma separated value file.")
@@ -1175,6 +1181,7 @@ def main():
     csv_file = None
     wildcard_filter = None
     verbose = False
+    skip = False
 
     #
     # Global Vars
@@ -1203,7 +1210,8 @@ def main():
                                            'lifetime=',
                                            'threads=',
                                            'db=',
-                                           'verbose'
+                                           'verbose',
+                                           'skip'
                                            ])
     except getopt.GetoptError:
         print_error("Wrong Option Provided!")
@@ -1271,6 +1279,8 @@ def main():
         elif opt in ('-v'):
             verbose = True
 
+        elif opt in ('--skip'):
+            skip = True
         elif opt in ('-h'):
             usage()
 
@@ -1321,7 +1331,7 @@ def main():
                 elif r == 'brt':
                     if (dict is not None) and (domain is not None):
                         print_status('Performing host and subdomain brute force against {0}'.format(domain))
-                        brt_enum_records = brute_domain(res, dict, domain, wildcard_filter, verbose)
+                        brt_enum_records = brute_domain(res, dict, domain, wildcard_filter, verbose,skip)
 
                         if (output_file is not None) or (results_db is not None) or (csv_file is not None):
                             returned_records.extend(brt_enum_records)
