@@ -1,3 +1,58 @@
+##Version 0.8.8
+
+###Date: 4/14/14
+###Changes:
+- Support for saving results in to a JSON file.
+- Bug fixes for:
+    - Parsing SPF and TXT records whe saving to XML, CSV and SQlite3.
+    - Filtering of wildcards records when brute forcing forward lookup zone.
+    - Several typos and miss spelled words.
+
+##Version 0.8.5
+
+###Date: 5/25/13
+###Changes:
+- Changed the way IP Ranges are handled and greatly improved speed and memory use in Reverse Lookup of large networks.
+
+##Version 0.8.4
+
+###Date: 5/19/13
+###Changes:
+- Improved Whois Parsing for ranges and organization.
+- Better Whois Record and Request handling for RIPE and APNIC.
+- Several bug fixes.
+- Added print messages for when saving output to files
+
+
+##Version 0.8.1
+
+###Changes:
+- Improved DNSEC Zone Walk.
+- Several Bug fixes for exporting data and parsing records in zone transfers.
+- DigiNinja Edition for all his hard work in making DNSRecon better
+##Version 0.7.8
+
+###Date: 7/8/12
+###Changes:
+- CSV file now have a proper header for better parsing on tools that support them like Excel and PowerShell.
+- Windows System Console printing is now managed properly.
+- CNAME Records are now saved in SQLite3 and CSV output. They where only saved on XML output.
+- Fixed error when performing Zone Transfers do to improper indent.
+- Fixed misslabling of -c option in the help message.
+- If a Range or CIDR is given and no scan type is given it will perform a Reverse Look up against it. When other types are given rvl type will be appended to the list automaticaly.
+- Improved NSEC Type detection so as to eliminate possible false positive.
+- Added processing of LOC, NAPTR, CERT and RP records of zone transfers returned. Proper information saved on XML output with proper field names in the attributes for these.
+- Fixes on google enumeration parsing.
+- Fixed several typos.
+- Better handling and canceling of threaded tasks.
+
+##Version 0.7.3
+
+###Date: 5/2/12
+###Changes:
+- Fixes for Python3 compatibility.
+- fix key values for when saving results to XML and CSV.
+
 ##Version 0.7.0
 
 ###Date: 3/2/12
@@ -12,7 +67,7 @@
 - Added tool folder with python script for parsing results in XML and CSV format. Provide ability to filter and extract hostnames and subdomains.
 - Added Metasploit Plugin for importing in to metasploit the CSV and XML results in a very fast manner using Nokogiri for XML, it ill add hosts, notes for hostnames and service entries.
 -Improvements on the zone transfer code:
-	
+
 	- Handling of zones with no NS Records.
 	- Proper parsing of PTR Records in returned zones.
 	- De-duplication of NS record IP Addresses.
@@ -20,7 +75,7 @@
 	- Provide more infomation on actions being taken.
 
 - Bug fixes reported by users at RandomStorm and by Robin Wood.
-- Zone Walking has been greatly improved including the accuracy of the results and the formatting to extract the information in a manner more useful for a pentester. 
+- Zone Walking has been greatly improved including the accuracy of the results and the formatting to extract the information in a manner more useful for a pentester.
 
 ##Version 0.6.6
 

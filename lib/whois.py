@@ -23,6 +23,7 @@ import socket
 WHOIS_PORT_NUMBER = 43
 WHOIS_RECEIVE_BUFFER_SIZE = 4096
 
+
 def get_whois(ip_addrs):
     """
     Function that returns what whois server is the one to be queried for
@@ -32,7 +33,7 @@ def get_whois(ip_addrs):
     whois_server = None
     ip = IPAddress(ip_addrs)
     info_of_ip = ip.info
-    if ip.version == 4 and ip.is_private() == False:
+    if ip.version == 4 and ip.is_private() is False:
         for i in info_of_ip['IPv4']:
             whois_server = i['whois']
             if len(whois_server) == 0 and i['status'] != "Reserved":
@@ -43,18 +44,20 @@ def get_whois(ip_addrs):
     return whois_server
 
 
-def whois(target,whois_srv):
+def whois(target, whois_srv):
     """
     Performs a whois query against a arin.net for a given IP, Domain or Host as a
     string and returns the answer of the query.
     """
     response = ""
-    #socket.setdefaulttimeout(4.0)
     counter = 1
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((whois_srv, WHOIS_PORT_NUMBER))
-        s.send(("n " + target + "\r\n").encode("utf-8"))
+        if whois_srv == "whois.arin.net":
+            s.send(("n " + target + "\r\n").encode("utf-8"))
+        else:
+            s.send((target + "\r\n").encode("utf-8"))
         response = ''
         while True:
             d = s.recv(WHOIS_RECEIVE_BUFFER_SIZE)
@@ -76,15 +79,18 @@ def get_whois_nets(data):
     """
 
     patern = '([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}) - ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})'
-    results = re.findall(patern,data)
-   
+    results = re.findall(patern, data)
+
     return results
+
 
 def get_whois_orgname(data):
     org_pattern = "OrgName\:\s*(.*)\n"
-    result = re.findall(org_pattern,data)
+    result = re.findall(org_pattern, data)
+    # Lets try RIPENET Format
+    if not result :
+        org_pattern = "netname\:\s*(.*)\n"
+        result = re.findall(org_pattern, data)
     if not result:
         result.append("Not Found")
     return result
-
-
